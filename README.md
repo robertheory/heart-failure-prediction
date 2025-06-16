@@ -4,7 +4,7 @@ Trabalho final da disciplina de Engenharia de Sistemas de Software Inteligentes 
 
 ## Descrição do Projeto
 
-Este projeto é uma aplicação fullstack para classificação de imagens de moda, utilizando técnicas de aprendizado de máquina. O objetivo é permitir que os usuários enviem imagens e recebam de volta a classificação correspondente.
+Este projeto é uma aplicação web para predição de doenças cardíacas, utilizando técnicas de aprendizado de máquina. O objetivo é permitir que os usuários enviem dados clínicos e recebam de volta a predição correspondente.
 
 ## Execução do Projeto
 
