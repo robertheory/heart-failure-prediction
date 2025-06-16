@@ -1,0 +1,7 @@
+# ML dependencies
+pandas
+numpy
+matplotlib
+scikit-learn
+pyarrow
+requests
