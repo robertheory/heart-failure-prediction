@@ -4,6 +4,7 @@
 # *.pkl 
 
 *venv
+.vscode
 
 .DS_Store
 
