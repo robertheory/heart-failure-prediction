@@ -1,4 +1,4 @@
-// Função para coletar dados do formulário e converter para o formato esperado
+
 function getFormData(form) {
   return {
     Age: Number(form.Age.value),
@@ -15,7 +15,6 @@ function getFormData(form) {
   };
 }
 
-// Função para exibir alertas Bootstrap
 function showAlert(type, message) {
   const resultDiv = document.getElementById('result');
   resultDiv.innerHTML = `
@@ -25,18 +24,27 @@ function showAlert(type, message) {
   `;
 }
 
-// Função para processar a resposta da API
+function showResultWithBack(type, message) {
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = `
+    <div class="alert alert-${type}" role="alert">
+      ${message}
+    </div>
+    <button id="backBtn" class="btn btn-secondary w-100 mt-3">Voltar</button>
+  `;
+  document.getElementById('backBtn').onclick = restoreForm;
+}
+
 function handlePredictionResult(result) {
   if (result['heart_disease'] === true) {
-    showAlert('danger', '<strong>Alerta:</strong> Indícios de doença cardíaca detectados.');
+    showResultWithBack('danger', '<strong>Alerta:</strong> Indícios de doença cardíaca detectados.');
   } else if (result['heart_disease'] === false) {
-    showAlert('success', '<strong>Parabéns!</strong> Não foram detectados indícios de doença cardíaca.');
+    showResultWithBack('success', '<strong>Parabéns!</strong> Não foram detectados indícios de doença cardíaca.');
   } else {
-    showAlert('warning', 'Resultado inesperado. Por favor, tente novamente.');
+    showResultWithBack('warning', 'Resultado inesperado. Por favor, tente novamente.');
   }
 }
 
-// Função para enviar os dados para a API
 async function submitPrediction(data) {
   const response = await fetch('http://127.0.0.1:5000/predict', {
     method: 'POST',
@@ -51,10 +59,16 @@ async function submitPrediction(data) {
   return response.json();
 }
 
-// Função principal de manipulação do formulário
+function restoreForm() {
+  document.getElementById('heartForm').reset();
+  document.getElementById('heartForm').style.display = 'block';
+  document.getElementById('result').innerHTML = '';
+}
+
 async function handleFormSubmit(event) {
   event.preventDefault();
   showAlert('info', 'Processando...');
+  document.getElementById('heartForm').style.display = 'none';
 
   const form = event.target;
   const data = getFormData(form);
@@ -63,9 +77,8 @@ async function handleFormSubmit(event) {
     const result = await submitPrediction(data);
     handlePredictionResult(result);
   } catch (error) {
-    showAlert('danger', `Erro ao processar a requisição: ${error.message}`);
+    showResultWithBack('danger', `Erro ao processar a requisição: ${error.message}`);
   }
 }
 
-// Adiciona o listener ao formulário
 document.getElementById('heartForm').addEventListener('submit', handleFormSubmit);
