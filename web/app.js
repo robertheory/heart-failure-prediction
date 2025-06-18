@@ -1,7 +1,6 @@
-document.getElementById('heartForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const form = e.target;
-  const data = {
+// Função para coletar dados do formulário e converter para o formato esperado
+function getFormData(form) {
+  return {
     Age: Number(form.Age.value),
     Sex: form.Sex.value,
     ChestPainType: form.ChestPainType.value,
@@ -14,47 +13,59 @@ document.getElementById('heartForm').addEventListener('submit', async function (
     Oldpeak: Number(form.Oldpeak.value),
     ST_Slope: form.ST_Slope.value
   };
+}
 
+// Função para exibir alertas Bootstrap
+function showAlert(type, message) {
   const resultDiv = document.getElementById('result');
-  resultDiv.innerHTML = '';
+  resultDiv.innerHTML = `
+    <div class="alert alert-${type}" role="alert">
+      ${message}
+    </div>
+  `;
+}
+
+// Função para processar a resposta da API
+function handlePredictionResult(result) {
+  if (result['heart_disease'] === true) {
+    showAlert('danger', '<strong>Alerta:</strong> Indícios de doença cardíaca detectados.');
+  } else if (result['heart_disease'] === false) {
+    showAlert('success', '<strong>Parabéns!</strong> Não foram detectados indícios de doença cardíaca.');
+  } else {
+    showAlert('warning', 'Resultado inesperado. Por favor, tente novamente.');
+  }
+}
+
+// Função para enviar os dados para a API
+async function submitPrediction(data) {
+  const response = await fetch('http://127.0.0.1:5000/predict', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+
+  if (!response.ok) {
+    throw new Error('Erro ao conectar ao servidor.');
+  }
+
+  return response.json();
+}
+
+// Função principal de manipulação do formulário
+async function handleFormSubmit(event) {
+  event.preventDefault();
+  showAlert('info', 'Processando...');
+
+  const form = event.target;
+  const data = getFormData(form);
 
   try {
-    const response = await fetch('http://127.0.0.1:5000/predict', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-
-    if (!response.ok) {
-      throw new Error('Erro ao conectar ao servidor.');
-    }
-
-    const result = await response.json();
-
-    if (result['heart disease'] === true) {
-      resultDiv.innerHTML = `
-        <div class="alert alert-danger" role="alert">
-          <strong>Alerta:</strong> Indícios de doença cardíaca detectados.
-        </div>
-      `;
-    } else if (result['heart disease'] === false) {
-      resultDiv.innerHTML = `
-        <div class="alert alert-success" role="alert">
-          <strong>Parabéns!</strong> Não foram detectados indícios de doença cardíaca.
-        </div>
-      `;
-    } else {
-      resultDiv.innerHTML = `
-        <div class="alert alert-warning" role="alert">
-          Resultado inesperado. Por favor, tente novamente.
-        </div>
-      `;
-    }
+    const result = await submitPrediction(data);
+    handlePredictionResult(result);
   } catch (error) {
-    resultDiv.innerHTML = `
-      <div class="alert alert-danger" role="alert">
-        Erro ao processar a requisição: ${error.message}
-      </div>
-    `;
+    showAlert('danger', `Erro ao processar a requisição: ${error.message}`);
   }
-});
+}
+
+// Adiciona o listener ao formulário
+document.getElementById('heartForm').addEventListener('submit', handleFormSubmit);

@@ -50,4 +50,4 @@ def predict(body: PredictInput):
 
     prediction = model.predict(processed_input)
 
-    return {"heart disease": bool(prediction[0])}
+    return {"heart_disease": bool(prediction[0])}
