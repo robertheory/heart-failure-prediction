@@ -45,13 +45,9 @@ def predict(body: PredictInput):
     """
     processed_input = convert_input_to_model_format(body)
 
-    print(f"Processed Input:")
-    print(processed_input)
-
     # Load the model
-    model = load_model('heart_disease_model.pkl')
+    model = load_model()
 
     prediction = model.predict(processed_input)
-    print(f"Prediction: {prediction}")
 
     return {"heart disease": bool(prediction[0])}
