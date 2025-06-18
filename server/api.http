@@ -1,4 +1,4 @@
-### HEART DISEASE: FALSE
+### HEART DISEASE: FALSE (Sem Doença Cardíaca)
 POST http://127.0.0.1:5000/predict
 Content-Type: application/json
 
@@ -6,84 +6,30 @@ Content-Type: application/json
   "Age": 45,
   "Sex": "M",
   "ChestPainType": "ATA",
-  "RestingBP": 140,
-  "Cholesterol": 289,
+  "RestingBP": 80,
+  "Cholesterol": 1,
   "FastingBS": 0,
   "RestingECG": "Normal",
-  "MaxHR": 172,
+  "MaxHR": 100,
   "ExerciseAngina": "N",
-  "Oldpeak": 0,
-  "ST_Slope": "Up"
-}
-
-### HEART DISEASE: FALSE
-POST http://127.0.0.1:5000/predict
-Content-Type: application/json
-
-{
-  "Age": 52,
-  "Sex": "F",
-  "ChestPainType": "NAP",
-  "RestingBP": 120,
-  "Cholesterol": 200,
-  "FastingBS": 0,
-  "RestingECG": "Normal",
-  "MaxHR": 168,
-  "ExerciseAngina": "N",
-  "Oldpeak": 0.2,
-  "ST_Slope": "Up"
-}
-
-### HEART DISEASE: TRUE
-POST http://127.0.0.1:5000/predict
-Content-Type: application/json
-
-{
-  "Age": 61,
-  "Sex": "M",
-  "ChestPainType": "ASY",
-  "RestingBP": 150,
-  "Cholesterol": 230,
-  "FastingBS": 1,
-  "RestingECG": "LVH",
-  "MaxHR": 120,
-  "ExerciseAngina": "Y",
-  "Oldpeak": 2.3,
+  "Oldpeak": 1.5,
   "ST_Slope": "Flat"
 }
 
-### HEART DISEASE: TRUE
+### HEART DISEASE: TRUE (Com Doença Cardíaca)
 POST http://127.0.0.1:5000/predict
 Content-Type: application/json
 
 {
-  "Age": 58,
-  "Sex": "M",
-  "ChestPainType": "ASY",
-  "RestingBP": 130,
-  "Cholesterol": 250,
-  "FastingBS": 1,
-  "RestingECG": "LVH",
-  "MaxHR": 105,
-  "ExerciseAngina": "Y",
-  "Oldpeak": 3.0,
-  "ST_Slope": "Down"
-}
-
-### HEART DISEASE: TRUE
-POST http://127.0.0.1:5000/predict
-Content-Type: application/json
-
-{
-  "Age": 65,
+  "Age": 60,
   "Sex": "F",
   "ChestPainType": "ASY",
-  "RestingBP": 155,
-  "Cholesterol": 180,
-  "FastingBS": 1,
+  "RestingBP": 85,
+  "Cholesterol": 1,
+  "FastingBS": 0,
   "RestingECG": "LVH",
   "MaxHR": 110,
   "ExerciseAngina": "Y",
-  "Oldpeak": 4.2,
+  "Oldpeak": 2.0,
   "ST_Slope": "Down"
 }

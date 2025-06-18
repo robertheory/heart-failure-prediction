@@ -1,7 +1,7 @@
 from flask_openapi3 import OpenAPI, Info, Tag
 from flask import redirect
 from flask_cors import CORS
-from schemas.predict import HeartFailureInput
+from schemas.predict import PredictInput
 from utils import convert_input_to_model_format, load_model
 
 # API Info
@@ -27,8 +27,6 @@ def home():
     """Redirect to /openapi, screen that allows choosing the documentation style."""
     return redirect('/openapi/swagger')
 
-    """Register stats routes."""
-
 
 predict_tag = Tag(
     name="Predict",
@@ -41,19 +39,19 @@ predict_tag = Tag(
     tags=[predict_tag],
     summary="Predict heart disease",
 )
-def predict(body: HeartFailureInput):
+def predict(body: PredictInput):
     """
     Predict heart disease based on input data.
     """
+    processed_input = convert_input_to_model_format(body)
+
+    print(f"Processed Input:")
+    print(processed_input)
 
     # Load the model
-    model = load_model()
+    model = load_model('heart_disease_model.pkl')
 
-    # Converte o body para dict e aplica a função de conversão
-    input_dict = body.model_dump()
-
-    processed_input = convert_input_to_model_format(input_dict)
-
-    prediction = model.predict([processed_input])
+    prediction = model.predict(processed_input)
+    print(f"Prediction: {prediction}")
 
     return {"heart disease": bool(prediction[0])}
