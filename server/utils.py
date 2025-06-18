@@ -28,38 +28,57 @@ def load_model(model_filename='heart_disease_model.pkl'):
     return model
 
 
-def convert_input_to_model_format(input_dict: PredictInput) -> pd.DataFrame:
+def convert_input_to_model_format(input_dict: PredictInput) -> np.ndarray:
+    """
+    Converte o input do usuário para o formato esperado pelo modelo,
+    aplicando o mesmo pré-processamento usado no treinamento.
+    """
     scaler = load_scaler()
 
-    # Convertendo o input para o formato esperado pelo modelo
-    data = {
-        'Age': [input_dict.Age],
-        'Sex': [1 if input_dict.Sex == 'M' else 0],
-        'RestingBP': [input_dict.RestingBP],
-        'Cholesterol': [input_dict.Cholesterol],
-        'FastingBS': [1 if input_dict.FastingBS == 'Y' else 0],
-        'MaxHR': [input_dict.MaxHR],
-        'ExerciseAngina': [1 if input_dict.ExerciseAngina == 'Y' else 0],
-        'Oldpeak': [input_dict.Oldpeak],
-        'ChestPainType_ASY': [1 if input_dict.ChestPainType == 'ASY' else 0],
-        'ChestPainType_ATA': [1 if input_dict.ChestPainType == 'ATA' else 0],
-        'ChestPainType_NAP': [1 if input_dict.ChestPainType == 'NAP' else 0],
-        'ChestPainType_TA': [1 if input_dict.ChestPainType == 'TA' else 0],
-        'RestingECG_LVH': [1 if input_dict.RestingECG == 'LVH' else 0],
-        'RestingECG_Normal': [1 if input_dict.RestingECG == 'Normal' else 0],
-        'RestingECG_ST': [1 if input_dict.RestingECG == 'ST' else 0],
-        'ST_Slope_Down': [1 if input_dict.ST_Slope == 'Down' else 0],
-        'ST_Slope_Flat': [1 if input_dict.ST_Slope == 'Flat' else 0],
-        'ST_Slope_Up': [1 if input_dict.ST_Slope == 'Up' else 0],
-    }
+    # Cria DataFrame com os dados de entrada
+    entrada = pd.DataFrame([{
+        'Age': input_dict.Age,
+        'Sex': input_dict.Sex,
+        'RestingBP': input_dict.RestingBP,
+        'Cholesterol': input_dict.Cholesterol,
+        'FastingBS': 1 if input_dict.FastingBS == 'Y' else 0,
+        'MaxHR': input_dict.MaxHR,
+        'ExerciseAngina': input_dict.ExerciseAngina,
+        'Oldpeak': input_dict.Oldpeak,
+        'ChestPainType': input_dict.ChestPainType,
+        'RestingECG': input_dict.RestingECG,
+        'ST_Slope': input_dict.ST_Slope
+    }])
 
-    atributos = ['Age', 'Sex', 'RestingBP', 'Cholesterol', 'FastingBS', 'MaxHR', 'ExerciseAngina', 'Oldpeak', 'ChestPainType_ASY', 'ChestPainType_ATA',
-                 'ChestPainType_NAP', 'ChestPainType_TA', 'RestingECG_LVH', 'RestingECG_Normal', 'RestingECG_ST', 'ST_Slope_Down', 'ST_Slope_Flat', 'ST_Slope_Up']
-    entrada = pd.DataFrame(data, columns=atributos)
+    # Mapeia variáveis categóricas conforme treinamento
+    entrada['Sex'] = entrada['Sex'].map({'M': 1, 'F': 0})
+    entrada['ExerciseAngina'] = entrada['ExerciseAngina'].map({'Y': 1, 'N': 0})
 
-    # Convertendo o DataFrame para um array NumPy de tipo float64
-    array_entrada = entrada.values.astype(np.float64)
-    # Padronização nos dados de entrada usando o scaler utilizado em X
-    rescaledEntradaX = scaler.transform(array_entrada)
+    # One-hot encoding para as demais variáveis categóricas
+    entrada = pd.get_dummies(
+        entrada,
+        columns=['ChestPainType', 'RestingECG', 'ST_Slope']
+    )
 
-    return rescaledEntradaX
+    # Garante que todas as colunas esperadas estejam presentes
+    expected_columns = [
+        'Age', 'Sex', 'RestingBP', 'Cholesterol', 'FastingBS', 'MaxHR',
+        'ExerciseAngina', 'Oldpeak',
+        'ChestPainType_ASY', 'ChestPainType_ATA', 'ChestPainType_NAP', 'ChestPainType_TA',
+        'RestingECG_LVH', 'RestingECG_Normal', 'RestingECG_ST',
+        'ST_Slope_Down', 'ST_Slope_Flat', 'ST_Slope_Up'
+    ]
+    for col in expected_columns:
+        if col not in entrada.columns:
+            entrada[col] = 0
+
+    # Ordena as colunas na ordem esperada
+    entrada = entrada[expected_columns]
+
+    # Converte para float
+    entrada = entrada.astype(float)
+
+    # Aplica o scaler treinado
+    rescaled_entrada = scaler.transform(entrada)
+
+    return rescaled_entrada
