@@ -2,6 +2,7 @@ from flask_openapi3 import OpenAPI, Info, Tag
 from flask import redirect
 from flask_cors import CORS
 from schemas.predict import PredictInput
+from model import Preprocessor, Pipeline
 from utils import convert_input_to_model_format, load_model
 
 # API Info
@@ -43,11 +44,18 @@ def predict(body: PredictInput):
     """
     Predict heart disease based on input data.
     """
-    processed_input = convert_input_to_model_format(body)
 
-    # Load the model
-    model = load_model()
+    preprocessor = Preprocessor()
+    pipeline = Pipeline()
 
-    prediction = model.predict(processed_input)
+    X_input = preprocessor.prepare_form(body)
+
+    print(f"Input data for prediction: {X_input}")
+
+    model_path = './ml/heart_disease_model.pkl'
+
+    model = pipeline.load_pipeline(model_path)
+
+    prediction = model.predict(X_input)
 
     return {"heart_disease": bool(prediction[0])}
