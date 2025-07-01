@@ -9,16 +9,6 @@ class Loader:
         """
         pass
 
-    def load(self, url: str, attributes: list) -> pd.DataFrame:
+    def load(self, path, attributes):
         """Load the dataset from the specified url."""
-        try:
-            df = pd.read_csv(url, usecols=attributes)
-            return df
-        except FileNotFoundError:
-            raise FileNotFoundError(
-                f"File not found at {url}. Please check the url.")
-        except pd.errors.EmptyDataError:
-            raise ValueError("No data found in the file.")
-        except Exception as e:
-            raise RuntimeError(
-                f"An error occurred while loading the data: {e}")
+        return pd.read_csv(path, usecols=attributes, header=0)

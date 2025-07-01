@@ -24,12 +24,12 @@ class Preprocessor:
         :return: Tuple of training and testing sets
         """
 
-        X_train, X_test, Y_train, Y_test = self.__holdout_prepare(
+        X_train, X_test, y_train, y_test = self.__holdout_prepare(
             dataset, test_size=test_size, seed=seed)
 
-        return (X_train, X_test, Y_train, Y_test)
+        return (X_train, X_test, y_train, y_test)
 
-    def __holdout_prepare(self, dataset, test_size=0.2, seed=7):
+    def __holdout_prepare(self, dataset, test_size, seed):
         """
         Prepare the dataset for holdout validation.
 
@@ -38,9 +38,11 @@ class Preprocessor:
         :param seed: Random seed for reproducibility
         :return: Tuple of training and testing sets
         """
-        X_train, X_test = self.train_test_split(
-            dataset, test_size=test_size, seed=seed)
-        return X_train, X_test
+
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=test_size, random_state=seed)
+
+        return X_train, X_test, y_train, y_test
 
     def load_scaler(self, scaler_filename='heart_disease_scaler.pkl'):
         """Carrega o scaler de ML usando pickle."""

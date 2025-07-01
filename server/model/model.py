@@ -17,14 +17,12 @@ class Model:
         :raises FileNotFoundError: If the model file does not exist
         :raises RuntimeError: If there is an error loading the model
         """
-        try:
+        if model_path.endswith('.pkl'):
             with open(model_path, 'rb') as file:
                 self.model = pickle.load(file)
-        except FileNotFoundError:
-            raise FileNotFoundError(f"Model file not found at {model_path}.")
-        except Exception as e:
-            raise RuntimeError(
-                f"An error occurred while loading the model: {e}")
+        else:
+            raise Exception('Formato de arquivo não suportado')
+        return self.model
 
     def predict(self, X_input):
         """
@@ -35,7 +33,7 @@ class Model:
         :raises RuntimeError: If no model is loaded
         """
         if self.model is None:
-            raise RuntimeError(
-                "No model loaded. Please load a model before making predictions.")
-
-        return self.model.predict(X_input)
+            raise Exception(
+                'Model not loaded. Please load a model before making predictions.')
+        diagnosis = self.model.predict(X_input)
+        return diagnosis
