@@ -50,8 +50,6 @@ def predict(body: PredictInput):
 
     X_input = preprocessor.prepare_form(body)
 
-    print(f"Input data for prediction: {X_input}")
-
     model_path = './ml/heart_disease_model.pkl'
 
     model = pipeline.load_pipeline(model_path)
