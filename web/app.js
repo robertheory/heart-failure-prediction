@@ -132,3 +132,7 @@ document.getElementById('loadExample1').addEventListener('click', function () {
 document.getElementById('loadExample2').addEventListener('click', function () {
   fillFormWithExample(EXAMPLE_2);
 });
+
+document.getElementById('clearForm').addEventListener('click', function () {
+  document.getElementById('heartForm').reset();
+});
