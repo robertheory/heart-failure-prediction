@@ -1,4 +1,3 @@
-
 function getFormData(form) {
   return {
     Age: Number(form.Age.value),
@@ -81,4 +80,55 @@ async function handleFormSubmit(event) {
   }
 }
 
+const EXAMPLE_1 = {
+  Age: 45,
+  Sex: "M",
+  ChestPainType: "ATA",
+  RestingBP: 80,
+  Cholesterol: 1,
+  FastingBS: 0,
+  RestingECG: "Normal",
+  MaxHR: 100,
+  ExerciseAngina: "N",
+  Oldpeak: 1.5,
+  ST_Slope: "Flat"
+};
+
+const EXAMPLE_2 = {
+  Age: 60,
+  Sex: "F",
+  ChestPainType: "ASY",
+  RestingBP: 85,
+  Cholesterol: 1,
+  FastingBS: 0,
+  RestingECG: "LVH",
+  MaxHR: 110,
+  ExerciseAngina: "Y",
+  Oldpeak: 2.0,
+  ST_Slope: "Down"
+};
+
+function fillFormWithExample(example) {
+  const form = document.getElementById('heartForm');
+  form.Age.value = example.Age;
+  form.Sex.value = example.Sex;
+  form.ChestPainType.value = example.ChestPainType;
+  form.RestingBP.value = example.RestingBP;
+  form.Cholesterol.value = example.Cholesterol;
+  form.FastingBS.value = example.FastingBS;
+  form.RestingECG.value = example.RestingECG;
+  form.MaxHR.value = example.MaxHR;
+  form.ExerciseAngina.value = example.ExerciseAngina;
+  form.Oldpeak.value = example.Oldpeak;
+  form.ST_Slope.value = example.ST_Slope;
+}
+
 document.getElementById('heartForm').addEventListener('submit', handleFormSubmit);
+
+document.getElementById('loadExample1').addEventListener('click', function () {
+  fillFormWithExample(EXAMPLE_1);
+});
+
+document.getElementById('loadExample2').addEventListener('click', function () {
+  fillFormWithExample(EXAMPLE_2);
+});
